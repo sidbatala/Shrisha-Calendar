@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
+    <title>Contact Us – Shrisha | Get in Touch</title>
+    <meta name="description" content="Get in touch with Shrisha. Questions, feedback, or partnership inquiries — we'd love to hear from you." />
+    <link rel="canonical" href="https://shrisha.com/contact.html" />
+
+    <meta property="og:site_name" content="Shrisha" />
+    <meta property="og:title" content="Contact Us – Shrisha" />
+    <meta property="og:description" content="Questions, feedback, or partnership inquiries — we'd love to hear from you." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://shrisha.com/contact.html" />
+    <meta property="og:image" content="https://shrisha.com/assets/og-contact.jpg" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Contact Us – Shrisha" />
+    <meta name="twitter:description" content="Get in touch with Shrisha." />
+    <meta name="twitter:image" content="https://shrisha.com/assets/og-contact.jpg" />
+
+    <link rel="preconnect" href="https://formspree.io" crossorigin />
+    <link rel="dns-prefetch" href="https://formspree.io" />
+
+    <link rel="icon" type="image/png" href="assets/favicon.png" />
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+    <link rel="shortcut icon" href="assets/favicon.ico" />
+    <link rel="apple-touch-icon" href="assets/favicon.png" />
+    <link rel="manifest" href="manifest.json" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preload" as="image" href="assets/contact-hero.png" />
+
+    <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="contact.css" />
+
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "ContactPage",
+            "name": "Contact Us – Shrisha",
+            "url": "https://shrisha.com/contact.html"
+        }
+    </script>
+</head>
+<body>
+
+    <header class="header">
+        <div class="header-inner">
+            <div class="nav-left">
+                <a href="index.html" class="logo" aria-label="Shrisha Home"><span class="logo-text">Shrisha</span></a>
+            </div>
+            <nav id="main-nav" class="main-nav" aria-label="Primary">
+                <ul id="nav-menu" class="nav-menu">
+                    <li><a href="index.html" class="nav-link">Home</a></li>
+                    <li><a href="index.html#tools-section" class="nav-link">Tools</a></li>
+                    <li><a href="index.html#calendar" class="nav-link">Calendar</a></li>
+                    <li><a href="Forex.html" class="nav-link">Forex</a></li>
+                    <li><a href="contact.html" class="nav-link active">Contact Us</a></li>
+                </ul>
+                <button class="mobile-menu-toggle" id="mobile-menu-toggle"
+                        type="button"
+                        aria-label="Toggle menu"
+                        aria-expanded="false"
+                        aria-controls="main-nav">
+                    <span></span><span></span><span></span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <div class="page-wrapper">
+
+        <section class="contact-hero" aria-label="Contact Shrisha">
+            <div class="contact-hero-content">
+                <div class="hero-source">
+                    <div class="hero-source-icon">
+                        <i class="fas fa-paper-plane" aria-hidden="true"></i>
+                    </div>
+                    <div class="hero-source-text">
+                        <div class="hero-source-name">GET IN TOUCH</div>
+                        <div class="hero-source-sub">We reply within 24 hours</div>
+                    </div>
+                </div>
+
+                <h1 class="hero-headline">
+                    Let's <span class="headline-accent">Talk</span>
+                </h1>
+                <div class="hero-underline" aria-hidden="true"></div>
+
+                <p class="hero-tagline">
+                    Questions, feedback, or partnership ideas — we'd love to hear from you.
+                </p>
+            </div>
+        </section>
+
+        <div class="contact-grid">
+
+            <div class="card contact-form-card">
+                <div class="card-header-row">
+                    <div class="red-bar"></div>
+                    <h2 class="card-heading">Send Us a Message</h2>
+                </div>
+                <p class="card-subheading">
+                    Fill out the form below and we'll get back to you as soon as possible.
+                </p>
+
+                <form id="contact-form" class="contact-form" novalidate>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="name">Full Name <span class="req">*</span></label>
+                            <input type="text" id="name" name="name" class="form-input"
+                                   placeholder="Your full name" autocomplete="name" required />
+                            <span class="form-error" data-for="name"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email Address <span class="req">*</span></label>
+                            <input type="email" id="email" name="email" class="form-input"
+                                   placeholder="you@example.com" autocomplete="email" required />
+                            <span class="form-error" data-for="email"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="phone">Phone (optional)</label>
+                            <input type="tel" id="phone" name="phone" class="form-input"
+                                   placeholder="+977 98XXXXXXXX" autocomplete="tel" />
+                            <span class="form-error" data-for="phone"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="subject">Subject <span class="req">*</span></label>
+                            <select id="subject" name="subject" class="form-input" required>
+                                <option value="">Choose a topic…</option>
+                                <option value="general">General Inquiry</option>
+                                <option value="feedback">Feedback / Suggestion</option>
+                                <option value="bug">Report a Bug</option>
+                                <option value="partnership">Partnership</option>
+                                <option value="advertising">Advertising</option>
+                                <option value="other">Other</option>
+                            </select>
+                            <span class="form-error" data-for="subject"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="message">Message <span class="req">*</span></label>
+                        <textarea id="message" name="message" class="form-input form-textarea"
+                                  placeholder="Tell us how we can help…"
+                                  rows="6" required></textarea>
+                        <span class="form-error" data-for="message"></span>
+                        <span class="char-count" id="char-count">0 / 1000</span>
+                    </div>
+
+                    <button type="submit" class="submit-btn" id="submit-btn">
+                        <i class="fas fa-paper-plane" aria-hidden="true"></i>
+                        <span>Send Message</span>
+                    </button>
+
+                    <div class="form-status" id="form-status" role="status" aria-live="polite"></div>
+                </form>
+            </div>
+
+            <aside class="contact-info-col">
+
+                <a href="mailto:sidbatala@gmail.com" class="info-card">
+                    <div class="info-icon"><i class="far fa-envelope" aria-hidden="true"></i></div>
+                    <div class="info-body">
+                        <div class="info-label">Email Us</div>
+                        <div class="info-value">sidbatala@gmail.com</div>
+                        <div class="info-hint">Replies within 24 hours</div>
+                    </div>
+                </a>
+
+                <a href="tel:+9779841234567" class="info-card">
+                    <div class="info-icon"><i class="fas fa-phone-alt" aria-hidden="true"></i></div>
+                    <div class="info-body">
+                        <div class="info-label">Call Us</div>
+                        <div class="info-value">+977 984-1234567</div>
+                        <div class="info-hint">Sun–Fri · 9:00 AM – 6:00 PM</div>
+                    </div>
+                </a>
+
+                <a href="https://maps.google.com/?q=Kathmandu,Nepal" target="_blank" rel="noopener" class="info-card">
+                    <div class="info-icon"><i class="fas fa-map-marker-alt" aria-hidden="true"></i></div>
+                    <div class="info-body">
+                        <div class="info-label">Visit Us</div>
+                        <div class="info-value">Kathmandu, Nepal</div>
+                        <div class="info-hint">By appointment only</div>
+                    </div>
+                </a>
+
+                <div class="info-card info-card-static">
+                    <div class="info-icon"><i class="far fa-clock" aria-hidden="true"></i></div>
+                    <div class="info-body">
+                        <div class="info-label">Business Hours</div>
+                        <div class="info-value">Sunday – Friday</div>
+                        <div class="info-hint">9:00 AM – 6:00 PM (NPT)</div>
+                    </div>
+                </div>
+
+                <div class="info-card info-card-static">
+                    <div class="info-icon"><i class="fas fa-share-alt" aria-hidden="true"></i></div>
+                    <div class="info-body">
+                        <div class="info-label">Follow Us</div>
+                        <div class="social-row">
+                            <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f" aria-hidden="true"></i></a>
+                            <a href="#" aria-label="Twitter"><i class="fab fa-twitter" aria-hidden="true"></i></a>
+                            <a href="#" aria-label="Instagram"><i class="fab fa-instagram" aria-hidden="true"></i></a>
+                            <a href="#" aria-label="YouTube"><i class="fab fa-youtube" aria-hidden="true"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+            </aside>
+        </div>
+
+        <div class="card faq-card">
+            <div class="card-header-row">
+                <div class="red-bar"></div>
+                <h2 class="card-heading">Frequently Asked Questions</h2>
+            </div>
+
+            <div class="faq-list" id="faq-list">
+                <div class="faq-item">
+                    <button type="button" class="faq-question" aria-expanded="false">
+                        <span>How quickly will you respond?</span>
+                        <i class="fas fa-chevron-down faq-chevron" aria-hidden="true"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>We typically respond within 24 hours on business days. Urgent
+                           inquiries via phone will be answered faster during business hours.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button type="button" class="faq-question" aria-expanded="false">
+                        <span>Can I request a new feature or tool?</span>
+                        <i class="fas fa-chevron-down faq-chevron" aria-hidden="true"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Absolutely! We love hearing ideas from our users. Choose the
+                           "Feedback / Suggestion" topic in the contact form and describe
+                           what you'd like to see.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button type="button" class="faq-question" aria-expanded="false">
+                        <span>Do you offer partnership or advertising opportunities?</span>
+                        <i class="fas fa-chevron-down faq-chevron" aria-hidden="true"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Yes. Please select "Partnership" or "Advertising" as the subject
+                           and include a brief description of your proposal. We'll get back
+                           to you with details.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button type="button" class="faq-question" aria-expanded="false">
+                        <span>I found a bug. How should I report it?</span>
+                        <i class="fas fa-chevron-down faq-chevron" aria-hidden="true"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Choose the "Report a Bug" subject and describe what you saw,
+                           what you expected, and (if possible) your device and browser.
+                           Screenshots help too.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <footer class="footer">
+        <div class="footer-overlay"></div>
+        <div class="footer-content">
+            <div class="footer-column brand-col">
+                <div class="footer-logo"><span>Shrisha</span> <span class="logo-sakura" aria-hidden="true">🌸</span></div>
+                <p class="footer-desc">नेपाली संस्कृतिको डिजिटल संगम</p>
+                <div class="social-links">
+                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f" aria-hidden="true"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter" aria-hidden="true"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram" aria-hidden="true"></i></a>
+                    <a href="#" aria-label="YouTube"><i class="fab fa-youtube" aria-hidden="true"></i></a>
+                </div>
+            </div>
+            <div class="footer-column">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="index.html#calendar">Calendar</a></li>
+                    <li><a href="Forex.html">Forex</a></li>
+                    <li><a href="contact.html">Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4>Resources</h4>
+                <ul>
+                    <li><a href="index.html#calendar">Nepali Calendar</a></li>
+                    <li><a href="index.html#calendar">Public Holidays</a></li>
+                    <li><a href="index.html#calendar">Nepali Patro</a></li>
+                    <li><a href="#">Astrology</a></li>
+                    <li><a href="#">News</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4>Tools</h4>
+                <ul>
+                    <li><a href="index.html#tools-section">Calculators</a></li>
+                    <li><a href="index.html#tools-section">Converters</a></li>
+                    <li><a href="index.html#tools-section">PDF Tools</a></li>
+                    <li><a href="index.html#tools-section">Utilities</a></li>
+                    <li><a href="index.html#tools-section">More Tools</a></li>
+                </ul>
+            </div>
+            <div class="footer-column contact-col">
+                <h4>Contact Us</h4>
+                <ul>
+                    <li><i class="far fa-envelope" aria-hidden="true"></i> sidbatala@gmail.com</li>
+                    <li><i class="fas fa-phone" aria-hidden="true"></i> +977 984-1234567</li>
+                    <li><i class="fas fa-map-marker-alt" aria-hidden="true"></i> Kathmandu, Nepal</li>
+                </ul>
+                <div class="footer-copyright">
+                    <p>&copy; <span id="current-year"></span> Shrisha. All rights reserved.</p>
+                    <p class="made-with">Made with <i class="fas fa-heart" aria-hidden="true"></i> in Nepal.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="contact.js" defer></script>
+</body>
+</html>

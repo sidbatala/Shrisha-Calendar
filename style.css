@@ -1198,6 +1198,7 @@ body {
         min-width: auto;
     }
 }
+
 @media (max-width: 992px) {
     .header-inner {
         padding: 12px 24px;
@@ -1244,6 +1245,12 @@ body {
         flex-direction: column;
     }
 }
+
+/* ============================================================
+   MOBILE (≤ 768px) — Calendar cell simplified:
+   festival text and tithi are hidden; only BS day number
+   and small AD date remain, centered in each cell.
+   ============================================================ */
 @media (max-width: 768px) {
     .nav-menu {
         display: none;
@@ -1281,6 +1288,9 @@ body {
     .month-nav-group {
         justify-content: center;
     }
+    .header-controls {
+        justify-content: center;
+    }
     .about-section {
         padding: 0 16px;
     }
@@ -1306,23 +1316,134 @@ body {
     .popup-panchang-mini {
         grid-template-columns: 1fr;
     }
+
+    /* ---------- CALENDAR CELL (mobile) ---------- */
+    .calendar-card {
+        padding: 14px 10px;
+    }
+    .calendar-wrapper {
+        overflow-x: hidden;
+    }
+    #calendar-table thead th {
+        padding: 8px 2px;
+        font-size: 0.85rem;
+    }
+    .th-nep {
+        font-size: 0.72rem;
+    }
+    .th-en {
+        font-size: 0.5rem;
+        letter-spacing: 0.2px;
+    }
+
+    #calendar-table tbody td {
+        height: 60px;
+        padding: 4px 2px;
+        vertical-align: middle;
+    }
+
+    /* Hide festival/event names and tithi on mobile */
+    #calendar-table .cell-center {
+        display: none;
+    }
+
+    /* Center the BS day number and stack the AD date below */
+    .cell-inner {
+        justify-content: center;
+        align-items: center;
+    }
+    .cell-top {
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 2px;
+    }
+    .bs-day {
+        font-size: 1.05rem;
+        width: 30px;
+        height: 30px;
+    }
+    .ad-date {
+        position: static;
+        display: block;
+        text-align: center;
+        font-size: 0.6rem;
+        line-height: 1.1;
+        margin-top: 1px;
+    }
+
+    /* Slightly tighter header controls */
+    .month-title {
+        font-size: 1.1rem;
+    }
+    .nav-btn {
+        width: 32px;
+        height: 32px;
+    }
+    .selector-dropdown {
+        padding: 5px 8px;
+        font-size: 0.85rem;
+    }
+    .today-btn-header {
+        padding: 7px 12px;
+        font-size: 0.82rem;
+    }
+    .toggle-mode-btn {
+        padding: 3px 8px;
+        font-size: 0.75rem;
+    }
 }
+
+/* ============================================================
+   SMALL MOBILE (≤ 480px) — Even more compact calendar cells
+   ============================================================ */
 @media (max-width: 480px) {
     .info-item {
         flex: 1 1 48%;
     }
     .calendar-card {
-        padding: 12px;
+        padding: 10px 6px;
     }
+
+    #calendar-table thead th {
+        padding: 6px 1px;
+    }
+    .th-nep {
+        font-size: 0.65rem;
+    }
+    .th-en {
+        display: none;
+    }
+
     #calendar-table tbody td {
-        height: 80px;
-        padding: 4px;
+        height: 52px;
+        padding: 2px 1px;
     }
     .bs-day {
-        font-size: 1.2rem;
-        width: 30px;
-        height: 30px;
+        font-size: 0.92rem;
+        width: 26px;
+        height: 26px;
     }
+    .ad-date {
+        font-size: 0.55rem;
+    }
+
+    .month-title {
+        font-size: 0.95rem;
+    }
+    .nav-btn {
+        width: 28px;
+        height: 28px;
+        font-size: 0.75rem;
+    }
+    .selector-dropdown {
+        padding: 4px 6px;
+        font-size: 0.78rem;
+    }
+    .today-btn-header {
+        padding: 6px 10px;
+        font-size: 0.76rem;
+    }
+
     .about-title {
         font-size: 1.3rem;
     }

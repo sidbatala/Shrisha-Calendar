@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
+    <title>Page Not Found – Shrisha</title>
+    <meta name="description" content="The page you were looking for could not be found." />
+    <meta name="robots" content="noindex, follow" />
+
+    <link rel="icon" type="image/png" href="assets/favicon.png" />
+    <link rel="apple-touch-icon" href="assets/favicon.png" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="style.css" />
+
+    <style>
+        .error-wrap {
+            max-width: 720px;
+            margin: 80px auto;
+            padding: 0 24px;
+            text-align: center;
+        }
+        .error-code {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 800;
+            font-size: clamp(4rem, 12vw, 7rem);
+            color: var(--primary);
+            line-height: 1;
+            letter-spacing: -0.03em;
+        }
+        .error-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin: 8px 0 12px;
+        }
+        .error-desc {
+            color: var(--text-secondary);
+            margin-bottom: 28px;
+        }
+        .error-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .error-actions .btn-primary,
+        .error-actions .btn-secondary {
+            padding: 12px 24px;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            text-decoration: none;
+            font-family: inherit;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.2s;
+            font-size: 0.95rem;
+        }
+        .error-actions .btn-primary {
+            background: var(--primary);
+            color: #fff;
+            border: none;
+        }
+        .error-actions .btn-primary:hover { background: var(--primary-hover); }
+        .error-actions .btn-secondary {
+            background: var(--card-bg);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+        }
+        .error-actions .btn-secondary:hover { border-color: var(--primary); color: var(--primary); }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <div class="header-inner">
+            <div class="nav-left">
+                <a href="index.html" class="logo" aria-label="Shrisha Home">
+                    <span class="logo-text">Shrisha</span>
+                    <span class="logo-sakura" aria-hidden="true">🌸</span>
+                </a>
+            </div>
+            <nav class="main-nav" aria-label="Primary">
+                <ul class="nav-menu">
+                    <li><a href="index.html" class="nav-link">Home</a></li>
+                    <li><a href="index.html#tools-section" class="nav-link">Tools</a></li>
+                    <li><a href="index.html#calendar" class="nav-link">Calendar</a></li>
+                    <li><a href="Forex.html" class="nav-link">Forex</a></li>
+                    <li><a href="contact.html" class="nav-link">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="error-wrap" role="main">
+        <div class="error-code" aria-hidden="true">404</div>
+        <h1 class="error-title">यो पृष्ठ भेटिएन</h1>
+        <p class="error-desc">The page you were looking for doesn't exist or has been moved.</p>
+
+        <div class="error-actions">
+            <a href="index.html" class="btn-primary">
+                <i class="fas fa-home" aria-hidden="true"></i> Back to Home
+            </a>
+            <a href="contact.html" class="btn-secondary">
+                <i class="fas fa-envelope" aria-hidden="true"></i> Contact Us
+            </a>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-overlay"></div>
+        <div class="footer-content">
+            <div class="footer-column brand-col">
+                <div class="footer-logo">Shrisha <span class="logo-sakura" aria-hidden="true">🌸</span></div>
+                <p class="footer-desc">नेपाली संस्कृतिको डिजिटल संगम</p>
+            </div>
+            <div class="footer-column contact-col">
+                <h4>Contact Us</h4>
+                <ul>
+                    <li><i class="far fa-envelope" aria-hidden="true"></i> sidbatala@gmail.com</li>
+                    <li><i class="fas fa-map-marker-alt" aria-hidden="true"></i> Kathmandu, Nepal</li>
+                </ul>
+            </div>
+        </div>
+        <div style="position:relative;max-width:1440px;margin:16px auto 0;padding-top:12px;border-top:1px solid var(--border-color);font-size:0.75rem;color:var(--text-secondary);z-index:1;">
+            &copy; <span id="current-year"></span> Shrisha. All rights reserved.
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+    </script>
+</body>
+</html>

@@ -16,9 +16,20 @@
     const DEFAULT_FROM = 'USD';
     const DEFAULT_TO   = 'NPR';
 
+    // ----- NEPAL TIMEZONE -----
+    // Nepal is UTC+5:45 with no DST. Used so the displayed Nepali date
+    // always matches "today in Nepal", regardless of the visitor's
+    // device timezone.
+    const NEPAL_OFFSET_MS = (5 * 60 + 45) * 60 * 1000;
+
+    // ----- EPOCH -----
+    // Baisakh 1, 2000 BS = April 14, 1943 AD
+    // (month index is 0-based inside Date.UTC)
+    const EPOCH_AD_UTC_MS = Date.UTC(1943, 3, 14);
+
     // ----- STATE -----
     let forexRates = [];
-    let currentDate = startOfDay(new Date());
+    let currentDate = null;              // set in init()
     let lastPublishedDate = null;
     let pickerMode = 'AD';
     let bsPickerSyncFn = null;
@@ -47,7 +58,7 @@
                      onerror="this.style.display='none'">`;
     }
 
-    // ----- DATE HELPERS -----
+    // ----- GENERIC DATE HELPERS -----
     function startOfDay(d) {
         const x = new Date(d);
         x.setHours(0, 0, 0, 0);
@@ -56,7 +67,6 @@
     function toISO(d) {
         return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
     }
-    function todayISO() { return toISO(new Date()); }
     function addDays(d, n) {
         const x = new Date(d);
         x.setDate(x.getDate() + n);
@@ -68,7 +78,34 @@
             && a.getDate() === b.getDate();
     }
 
-    // ----- BS/AD CONVERSION -----
+    // ----- NEPAL-LOCAL DATE PARTS -----
+    // Returns { year, month(1-12), day, weekday(0-6) } for the given
+    // instant, expressed in Nepal Standard Time (UTC+5:45). Uses UTC
+    // getters on a shifted timestamp so the result is timezone-agnostic.
+    function getNepalDateParts(date) {
+        const d = date || new Date();
+        const nepalMs = d.getTime() + NEPAL_OFFSET_MS;
+        const nepal = new Date(nepalMs);
+        return {
+            year:    nepal.getUTCFullYear(),
+            month:   nepal.getUTCMonth() + 1,
+            day:     nepal.getUTCDate(),
+            weekday: nepal.getUTCDay()
+        };
+    }
+
+    // A local-midnight Date whose Y/M/D match "today in Nepal".
+    // Returned Date is safe for local date arithmetic and toISO().
+    function getNepalToday() {
+        const np = getNepalDateParts();
+        return new Date(np.year, np.month - 1, np.day);
+    }
+
+    function todayISO() {
+        return toISO(getNepalToday());
+    }
+
+    // ----- BS/AD CONVERSION (UTC-based, timezone-safe) -----
     function getNepaliMonths() {
         return window.DATA?.nepaliMonths
             || ['बैशाख','जेठ','असार','साउन','भदौ','असोज','कार्तिक','मंसिर','पौष','माघ','फागुन','चैत्र'];
@@ -84,8 +121,9 @@
     function daysInBsYear(y) {
         return window.DATA.bsData[y].reduce((a, b) => a + b, 0);
     }
-    function epochDate() { return new Date(1943, 3, 14); }
 
+    // BS -> AD. Returns a local-midnight Date whose Y/M/D equal the
+    // target calendar day, or null if the input is invalid.
     function bsToAd(bsYear, bsMonth, bsDay) {
         const years = getAvailableYears();
         if (!years.includes(bsYear)) return null;
@@ -102,17 +140,23 @@
         for (let i = 0; i < bsMonth; i++) offset += monthsInYear[i];
         offset += bsDay - 1;
 
-        const result = new Date(epochDate());
-        result.setDate(result.getDate() + offset);
-        return result;
+        const targetMs = EPOCH_AD_UTC_MS + offset * 86400000;
+        const target = new Date(targetMs);
+
+        // Rebuild in the device's local timezone using the UTC calendar
+        // components so downstream getFullYear/getMonth/getDate are
+        // stable regardless of the visitor's timezone.
+        return new Date(target.getUTCFullYear(), target.getUTCMonth(), target.getUTCDate());
     }
 
+    // AD -> BS. Timezone-agnostic: Y/M/D are treated as a pure calendar
+    // date, never as a UTC instant.
     function adToBs(adYear, adMonth, adDay) {
         const years = getAvailableYears();
         if (!years.length) return { y: 2083, m: 4, d: 2 };
 
-        const input = new Date(adYear, adMonth - 1, adDay);
-        const diff = Math.floor((input - epochDate()) / 86400000);
+        const t = Date.UTC(adYear, adMonth - 1, adDay);
+        const diff = Math.floor((t - EPOCH_AD_UTC_MS) / 86400000);
 
         if (diff < 0) return { y: years[0], m: 0, d: 1, outOfRange: true };
 
@@ -146,11 +190,36 @@
         };
     }
 
+    // Parse "YYYY-MM-DD[THH:MM...]" as a pure calendar date.
+    // Does NOT apply timezone shifts, so "2025-01-15" always yields
+    // { year: 2025, month: 1, day: 15 }.
+    function parseCalendarDate(s) {
+        if (!s) return null;
+        const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(s));
+        if (!m) return null;
+        return {
+            year:  parseInt(m[1], 10),
+            month: parseInt(m[2], 10),
+            day:   parseInt(m[3], 10)
+        };
+    }
+
     function formatBsDate(isoString) {
         if (!isoString) return '--';
-        const d = new Date(isoString);
-        if (isNaN(d)) return '--';
-        const bs = adToBs(d.getFullYear(), d.getMonth() + 1, d.getDate());
+
+        let y, mo, d;
+        const parsed = parseCalendarDate(isoString);
+        if (parsed) {
+            y = parsed.year; mo = parsed.month; d = parsed.day;
+        } else {
+            const dt = new Date(isoString);
+            if (isNaN(dt)) return '--';
+            y = dt.getFullYear();
+            mo = dt.getMonth() + 1;
+            d = dt.getDate();
+        }
+
+        const bs = adToBs(y, mo, d);
         if (bs.outOfRange) return '--';
         const months = getNepaliMonths();
         return `${String(bs.d).padStart(2, '0')} ${months[bs.m]} ${bs.y}`;
@@ -183,8 +252,8 @@
         const bsPicker = document.getElementById('forex-bs-picker');
         if (!yearSel || !monthSel || !daySel || !toggle || !adInput || !bsPicker) return;
 
-        const today    = startOfDay(new Date());
-        const minDate  = new Date(MIN_DATE + 'T00:00:00');
+        const today   = getNepalToday();
+        const minDate = new Date(MIN_DATE + 'T00:00:00');
 
         const years = getAvailableYears();
         const validYears = years.filter(y => {
@@ -364,8 +433,8 @@
     function updateRateDateBadge(requestedISO, actualISO) {
         const badge = document.getElementById('rateDateBadge');
         if (!badge) return;
-        const requestedDate = new Date(requestedISO);
-        const today = startOfDay(new Date());
+        const requestedDate = new Date(requestedISO + 'T00:00:00');
+        const today = getNepalToday();
 
         if (isSameDay(requestedDate, today)) {
             badge.textContent = 'Today';
@@ -378,7 +447,7 @@
         });
 
         if (actualISO && actualISO !== requestedISO) {
-            const act = new Date(actualISO);
+            const act = new Date(actualISO + 'T00:00:00');
             const actLabel = act.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
             badge.textContent = `Showing ${actLabel} (no rates on ${reqLabel})`;
         } else {
@@ -390,9 +459,27 @@
     function updateTimestamp(isoDateTime) {
         const el = document.getElementById('updatedTime');
         if (!el) return;
-        const d = new Date(isoDateTime);
-        const timeStr = d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
-        const dateStr = d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+
+        const m = /^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2})/.exec(String(isoDateTime));
+        if (m) {
+            const y  = parseInt(m[1], 10);
+            const mo = parseInt(m[2], 10);
+            const d  = parseInt(m[3], 10);
+            const h  = parseInt(m[4], 10);
+            const mi = parseInt(m[5], 10);
+            const ampm = h >= 12 ? 'PM' : 'AM';
+            const hr12 = h % 12 || 12;
+            const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+            const timeStr = `${String(hr12).padStart(2, '0')}:${String(mi).padStart(2, '0')} ${ampm}`;
+            const dateStr = `${d} ${monthNames[mo - 1]} ${y}`;
+            el.textContent = `Updated ${dateStr} · ${timeStr}`;
+            return;
+        }
+
+        const dt = new Date(isoDateTime);
+        if (isNaN(dt)) { el.textContent = '--'; return; }
+        const timeStr = dt.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+        const dateStr = dt.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
         el.textContent = `Updated ${dateStr} · ${timeStr}`;
     }
 
@@ -404,14 +491,14 @@
     }
 
     function updateTodayButtonVisibility(dateObj) {
-        const todayBtn = document.getElementById('today-btn');
-        const nextBtn  = document.getElementById('next-day');
+        const todayBtn  = document.getElementById('today-btn');
+        const nextBtn   = document.getElementById('next-day');
         const dateInput = document.getElementById('forex-date');
-        const today = startOfDay(new Date());
+        const today = getNepalToday();
 
         const onToday = isSameDay(dateObj, today);
         if (todayBtn) todayBtn.hidden = onToday;
-        if (nextBtn) nextBtn.disabled = onToday;
+        if (nextBtn)  nextBtn.disabled = onToday;
 
         if (dateInput) {
             dateInput.max = todayISO();
@@ -541,7 +628,7 @@
         const amountEl = document.getElementById('currency-amount');
         const resultEl = document.getElementById('currency-result');
         const fromCode = document.getElementById('currency-from')?.value;
-        const toCode = document.getElementById('currency-to')?.value;
+        const toCode   = document.getElementById('currency-to')?.value;
         if (!amountEl || !resultEl || !fromCode || !toCode) return;
 
         const amt = parseFloat(amountEl.value) || 0;
@@ -628,11 +715,11 @@
     }
 
     // ============================================================
-    // HERO DATE
+    // HERO DATE (always shown in Nepal time)
     // ============================================================
     function updateHeroDate() {
-        const now = new Date();
-        const bs = adToBs(now.getFullYear(), now.getMonth() + 1, now.getDate());
+        const np = getNepalDateParts();
+        const bs = adToBs(np.year, np.month, np.day);
         const months = getNepaliMonths();
         const weekdays = getNepaliWeekdays();
 
@@ -647,10 +734,13 @@
             nepaliDayEl.textContent  = '--';
         } else {
             nepaliDateEl.textContent = `${String(bs.d).padStart(2, '0')} ${months[bs.m]} ${bs.y}`;
-            nepaliDayEl.textContent  = weekdays[now.getDay()];
+            nepaliDayEl.textContent  = weekdays[np.weekday];
         }
-        if (engDateEl) engDateEl.textContent = now.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-        if (engDayEl)  engDayEl.textContent  = now.toLocaleDateString('en-US', { weekday: 'long' });
+
+        // Hidden English date fields (kept in DOM for potential a11y use)
+        const adDateObj = new Date(np.year, np.month - 1, np.day);
+        if (engDateEl) engDateEl.textContent = adDateObj.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+        if (engDayEl)  engDayEl.textContent  = adDateObj.toLocaleDateString('en-US', { weekday: 'long' });
     }
 
     // ============================================================
@@ -671,7 +761,7 @@
                 if (!dateInput.value) return;
                 const picked = new Date(dateInput.value + 'T00:00:00');
                 if (isNaN(picked)) return;
-                if (picked > startOfDay(new Date())) {
+                if (picked > getNepalToday()) {
                     dateInput.value = toISO(currentDate);
                     return;
                 }
@@ -688,12 +778,12 @@
 
         nextBtn?.addEventListener('click', () => {
             const next = addDays(currentDate, 1);
-            if (next > startOfDay(new Date())) return;
+            if (next > getNepalToday()) return;
             goToDate(next);
         });
 
         todayBtn?.addEventListener('click', () => {
-            goToDate(startOfDay(new Date()));
+            goToDate(getNepalToday());
         });
     }
 
@@ -724,6 +814,32 @@
     }
 
     // ============================================================
+    // NEPAL MIDNIGHT REFRESH
+    // ============================================================
+    function msUntilNepalMidnight() {
+        const nepalNow = Date.now() + NEPAL_OFFSET_MS;
+        const nextMidnight = Math.floor(nepalNow / 86400000) * 86400000 + 86400000;
+        return nextMidnight - nepalNow;
+    }
+
+    function scheduleMidnightRefresh() {
+        const delay = msUntilNepalMidnight() + 5000; // +5s buffer
+        setTimeout(() => {
+            updateHeroDate();
+
+            // If the user was viewing "yesterday" (relative to Nepal),
+            // advance to the new "today". Otherwise just refresh state.
+            const yesterday = addDays(getNepalToday(), -1);
+            if (isSameDay(currentDate, yesterday)) {
+                goToDate(getNepalToday());
+            } else {
+                updateTodayButtonVisibility(currentDate);
+            }
+            scheduleMidnightRefresh();
+        }, delay);
+    }
+
+    // ============================================================
     // INIT
     // ============================================================
     function init() {
@@ -731,6 +847,10 @@
         initDateConverter();
         updateHeroDate();
         initMobileMenu();
+
+        // Anchor "today" to Nepal, not the device's local timezone.
+        currentDate = startOfDay(getNepalToday());
+
         initDateNavigation();
         initBsPicker();
         preventWheelScroll();
@@ -749,33 +869,16 @@
         populateCurrencySelects();
         convertCurrency();
 
-        currentDate = startOfDay(new Date());
         fetchRatesForDate(currentDate);
 
+        // Auto-refresh today's rates periodically.
         setInterval(() => {
-            if (isSameDay(currentDate, startOfDay(new Date()))) {
+            if (isSameDay(currentDate, getNepalToday())) {
                 fetchRatesForDate(currentDate, { silent: true });
             }
         }, REFRESH_MS);
 
         scheduleMidnightRefresh();
-    }
-
-    function scheduleMidnightRefresh() {
-        const now = new Date();
-        const next = new Date(now);
-        next.setDate(now.getDate() + 1);
-        next.setHours(0, 0, 5, 0);
-        setTimeout(() => {
-            updateHeroDate();
-            const wasOnOldToday = isSameDay(currentDate, addDays(startOfDay(new Date()), -1));
-            if (wasOnOldToday) {
-                goToDate(startOfDay(new Date()));
-            } else {
-                updateTodayButtonVisibility(currentDate);
-            }
-            scheduleMidnightRefresh();
-        }, next - now);
     }
 
     if (document.readyState === 'loading') {
